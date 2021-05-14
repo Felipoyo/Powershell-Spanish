@@ -9,22 +9,21 @@ function Get-Palabras {
 .PARAMETER Fichero
     Rutal del archivo a analizar
 .PARAMETER Repetido
-    Para uso futuro
+   Por defecto no se contaran palabras repetidas
+   Si desea obtener el total de palabras asigne  $false
 .INPUTS
   Archivo en texto plano
 .OUTPUTS
   Integer numero de palabras
 .NOTES
-  Version:        1.0
+  Version:        1.1
   Author:         Felipoyo
   Creation Date:  13/05/2021
-  Purpose/Change: Initial script development
+  Purpose/Change: Se agrega funcionalidad de palabras repetidas
   
 .EXAMPLE
-  Get-Palabras -Fichero "C:\Users\XXXXX\Desktop\palabras.txt"
-
-
-
+  Get-Palabras -Fichero "C:\Users\XXXXX\Desktop\palabras.txt"  
+  Get-Palabras -Fichero "C:\Users\XXXXX\Desktop\demowords.txt"  -Repetido:$false
 #>
     Param(
         # Parametro: Fichero : Obligatorio, String
@@ -36,15 +35,24 @@ function Get-Palabras {
         [bool]
         $Repetido = $true #valur por default
     )
-    $resultado 
-    Write-Host "Contando palabras del archivo $($Fichero)"
+    $palabras = @()
+    Write-debug "Contando palabras del archivo $($Fichero)"
     $contenido = Get-Content -LiteralPath $Fichero
     $contenido| foreach{
     $linea = $_
-     $resultado  = $resultado +  $linea.replace(".","").replace(";","").replace(",","").Split(" ").Split("`t").Count
+    $palabrasdelinea = $linea.replace(".;,`r`n`0","").Split(" ").Split("`t")
+    $palabras += $palabrasdelinea
+     
+   
     }
-
+    if($Repetido -eq $false){
+      
+      $resultado  =  $($palabras | Where-Object { $_ -ne "" }).count
+    
+     }else{
+     $resultado  =   $($palabras | Where-Object { $_ -ne "" } | select  -Unique).count
+     
+     }
     Return [int]$resultado
 }
-
-Get-Palabras -Fichero "C:\Users\XXXXX\Desktop\demowords.txt"
+Get-Palabras -Fichero "C:\Users\sopor\Desktop\demowords.txt"  -Repetido:$false
