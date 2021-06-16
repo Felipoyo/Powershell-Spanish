@@ -10,7 +10,7 @@ SamAccountName3
 #desde csv
   $usuarios = import-csv "C:\Temp\users.csv" 
   #por consulta
-$usuarios = Get-ADUser -Filter * -SearchBase "OU=Usuarios,DC=GNP,DC=MX" 
+$usuarios = Get-ADUser -Filter * -SearchBase "OU=Usuarios,DC=DOMAIN,DC=MX" 
 $object =  New-Object -TypeName PSCustomObject
 $object | Add-Member -Name SamAccountName  -MemberType NoteProperty -Value $null
 $object | Add-Member -Name GroupName -MemberType NoteProperty -Value $null
